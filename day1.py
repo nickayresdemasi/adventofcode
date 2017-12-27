@@ -1,3 +1,11 @@
+'''
+@author: Nick DeMasi
+
+Code to complete Day 1 of 2017 Advent of
+Code using Python 3
+
+'''
+
 def calculate(number):
     total = 0
     digits = len(number)
