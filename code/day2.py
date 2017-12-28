@@ -1,9 +1,27 @@
+'''
+@author: Nick DeMasi
+
+Code to complete Day 2 of 2017 Advent of
+Code using Python 3
+
+'''
+
+import os
+
+
+ABS_PATH = 'C://Users/ldema/Coding/python_projects/adventofcode2017'
+
+
 def checksum(row):
+    '''Calculates the difference between the max and min of numbers
+    in a row of a spreadsheet'''
     diff = max(row) - min(row)
     return diff
 
 
 def checksum_2(row):
+    '''Finds two numbers in a spreadsheet which can be divided evenly
+    into one another and returns the result of that division'''
     row.sort(reverse=True)
 
     for i in range(len(row)):
@@ -17,7 +35,8 @@ def checksum_2(row):
 
 
 if __name__ == '__main__':
-    file = open('day2.txt')
+    path = os.path.join(ABS_PATH, 'input/day2.txt')
+    file = open(path, 'r')
     text = file.read()
     spreadsheet = [[int(n) for n in row.split('\t')] for row in text.split('\n')]
 
@@ -26,5 +45,5 @@ if __name__ == '__main__':
     for row in spreadsheet:
         total_1 += checksum(row)
         total_2 += checksum_2(row)
-    print(total_1)
-    print(total_2)
+    print("Part 1:        ", total_1)
+    print("Part 2:        ", total_2)

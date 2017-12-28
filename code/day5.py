@@ -1,12 +1,40 @@
-def exit_array(l):
+'''
+@author: Nick DeMasi
+
+Code to complete Day 5 of 2017 Advent of
+Code using Python 3
+
+'''
+
+import os
+
+
+ABS_PATH = 'C://Users/ldema/Coding/python_projects/adventofcode2017'
+
+
+def exit_array_simple(array):
+    '''Exits an array of numbers following simple rules'''
     pos = 0
     moves = 0
-    while pos < len(l):
-        jump = l[pos]
+    while pos < len(array):
+        jump = array[pos]
+        array[pos] += 1
+        pos += jump
+        moves += 1
+
+    return moves
+
+
+def exit_array_complex(array):
+    '''Exits an array of numbers folliwng complex rules'''
+    pos = 0
+    moves = 0
+    while pos < len(array):
+        jump = array[pos]
         if jump >= 3:
-            l[pos] -= 1
+            array[pos] -= 1
         else:
-            l[pos] += 1
+            array[pos] += 1
         pos += jump
         moves += 1
 
@@ -14,7 +42,10 @@ def exit_array(l):
 
 
 if __name__ == '__main__':
-    file = open('day5.txt', 'r')
+    path = os.path.join(ABS_PATH, 'input/day5.txt')
+    file = open(path, 'r')
     text = file.read()
     nums = [int(n) for n in text.split('\n')]
-    print(exit_array(nums))
+
+    print("Part 1:        ", exit_array_simple(nums))
+    print("Part 2:        ", exit_array_complex(nums))

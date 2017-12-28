@@ -1,4 +1,19 @@
+'''
+@author: Nick DeMasi
+
+Code to complete Day 4 of 2017 Advent of
+Code using Python 3
+
+'''
+
+import os
+
+
+ABS_PATH = 'C://Users/ldema/Coding/python_projects/adventofcode2017'
+
+
 def duplicates(passphrase):
+    '''Searches for duplicate strings in line of text'''
     passphrase_list = passphrase.split(" ")
     if len(passphrase_list) != len(set(passphrase_list)):
         return True
@@ -6,6 +21,7 @@ def duplicates(passphrase):
 
 
 def palindromes(passphrase):
+    '''Searches for palindromes in line of text'''
     p_list = passphrase.split(" ")
     sorted_words = []
     for word in p_list:
@@ -17,12 +33,17 @@ def palindromes(passphrase):
 
 
 if __name__ == '__main__':
-    file = open('day4.txt', 'r')
+    path = os.path.join(ABS_PATH, 'input/day4.txt')
+    file = open(path, 'r')
     text = file.read()
 
-    good_phrases = 0
+    non_dup = 0
+    non_pal = 0
     for passphrase in text.split('\n'):
+        if not duplicates(passphrase):
+            non_dup += 1
         if not palindromes(passphrase):
-            good_phrases += 1
+            non_pal += 1
 
-    print(good_phrases)
+    print("Part 1:        ", non_dup)
+    print("Part 2:        ", non_pal)
