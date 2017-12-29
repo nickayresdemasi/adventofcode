@@ -33,13 +33,12 @@ class GroupParser(object):
                 stack += 1
                 pos += 1
             elif c == '}':
-                total += stack
-                stack -= 1
+                if stack != 0:
+                    total += stack
+                    stack -= 1
                 pos += 1
             elif c == '<':
                 pos += self.garbage_time(pos)
-            elif c == '>':
-                pass
             elif c == '!':
                 pos += 2
             else:
@@ -49,15 +48,14 @@ class GroupParser(object):
 
     def garbage_time(self, pos):
         '''Finds the end of a group of garbage'''
-        offset = 0
+        offset = 1
         while self.input[pos + offset] != '>':
             offset += 1
-
             # check for nullifying character
             if self.input[pos + offset] == '!':
                 offset += 1
 
-        return offset + 1
+        return offset
 
 
 if __name__ == '__main__':
