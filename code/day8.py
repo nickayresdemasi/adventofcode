@@ -49,11 +49,8 @@ class Register(object):
         # carry out instruction
         function(var, val, d_var, mod_val)
 
-<<<<<<< HEAD
-=======
         return var
 
->>>>>>> progress
     def reset(self):
         for k in self.variables.keys():
             self.variables[k] = 0
