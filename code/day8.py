@@ -26,10 +26,10 @@ class Register(object):
         # store each part of the instruction
         var = i_split[0]
         mod = i_split[1]
-        val = int(i_split[2])
+        mod_val = int(i_split[2])
         d_var = i_split[4]
         conditional = i_split[5]
-        mod_val = int(i_split[6])
+        val = int(i_split[6])
 
         # if var not yet encountered, initialize at 0
         if var not in self.variables.keys():
@@ -47,58 +47,58 @@ class Register(object):
             raise ValueError("Unable to generate function")
 
         # carry out instruction
-        function(self.variables[var], val, self.variables[d_var], mod_val)
+        function(var, val, d_var, mod_val)
 
     def __generate_function(self, mod, conditional):
         '''Function generation engine'''
         if conditional == '==' and mod == 'inc':
             def f(var, val, d_var, mod_val):
-                if d_var == val:
-                    var += mod_val
+                if self.variables[d_var] == val:
+                    self.variables[var] += mod_val
         elif conditional == '==' and mod == 'dec':
             def f(var, val, d_var, mod_val):
-                if d_var == val:
-                    var -= mod_val
+                if self.variables[d_var] == val:
+                    self.variables[var] -= mod_val
         elif conditional == '!=' and mod == 'inc':
             def f(var, val, d_var, mod_val):
-                if d_var != val:
-                    var += mod_val
+                if self.variables[d_var] != val:
+                    self.variables[var] += mod_val
         elif conditional == '!=' and mod == 'dec':
             def f(var, val, d_var, mod_val):
-                if d_var != val:
-                    var -= mod_val
+                if self.variables[d_var] != val:
+                    self.variables[var] -= mod_val
         elif conditional == '>=' and mod == 'inc':
             def f(var, val, d_var, mod_val):
-                if d_var >= val:
-                    var += mod_val
+                if self.variables[d_var] >= val:
+                    self.variables[var] += mod_val
         elif conditional == '>=' and mod == 'dec':
             def f(var, val, d_var, mod_val):
-                if d_var >= val:
-                    var -= mod_val
+                if self.variables[d_var] >= val:
+                    self.variables[var] -= mod_val
         elif conditional == '<=' and mod == 'inc':
             def f(var, val, d_var, mod_val):
-                if d_var <= val:
-                    var += mod_val
+                if self.variables[d_var] <= val:
+                    self.variables[var] += mod_val
         elif conditional == '<=' and mod == 'dec':
             def f(var, val, d_var, mod_val):
-                if d_var <= val:
-                    var -= mod_val
+                if self.variables[d_var] <= val:
+                    self.variables[var] -= mod_val
         elif conditional == '>' and mod == 'inc':
             def f(var, val, d_var, mod_val):
-                if d_var > val:
-                    var += mod_val
+                if self.variables[d_var] > val:
+                    self.variables[var] += mod_val
         elif conditional == '>' and mod == 'dec':
             def f(var, val, d_var, mod_val):
-                if d_var > val:
-                    var -= mod_val
+                if self.variables[d_var] > val:
+                    self.variables[var] -= mod_val
         elif conditional == '<' and mod == 'inc':
             def f(var, val, d_var, mod_val):
-                if d_var < val:
-                    var += mod_val
+                if self.variables[d_var] < val:
+                    self.variables[var] += mod_val
         elif conditional == '<' and mod == 'dec':
             def f(var, val, d_var, mod_val):
-                if d_var < val:
-                    var -= mod_val
+                if self.variables[d_var] < val:
+                    self.variables[var] -= mod_val
         else:
             return None
 
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     instructions = file.read().split('\n')
 
     register = Register()
-    for i in instructions[:-1]:
+    for i in instructions:
         register.read_instruction(i)
 
     print("Part 1:        ", max(register.variables.values()))
