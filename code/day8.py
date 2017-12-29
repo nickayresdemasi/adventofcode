@@ -126,8 +126,8 @@ if __name__ == '__main__':
 
     max_val = 0
     for i in instructions:
-        var = register.read_instruction(i)
-        if register.variables[var] > max_val:
-            max_val = register.variables[var]
+        temp_var = register.read_instruction(i)
+        if register.variables[temp_var] > max_val:
+            max_val = register.variables[temp_var]
 
     print("Part 2:        ", max_val)
