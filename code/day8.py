@@ -17,17 +17,6 @@ class Register(object):
     def __init__(self):
         self.variables = {}
 
-    def find_max(self):
-        '''Finds largest variable in register'''
-        max_val = 0
-        max_var = ''
-        for var in self.variables.keys():
-            if self.variables[var] > max_val:
-                max_val = self.variables[var]
-                max_var = var
-
-        return max_var
-
     def read_instruction(self, instruction):
         '''Make changes to register according to instruction'''
 
