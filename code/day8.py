@@ -122,7 +122,7 @@ if __name__ == '__main__':
     instructions = file.read().split('\n')
 
     register = Register()
-    for i in instructions:
+    for i in instructions[:-1]:
         register.read_instruction(i)
 
-    print("Part 1:        ", register.find_max())
+    print("Part 1:        ", max(register.variables.values()))
