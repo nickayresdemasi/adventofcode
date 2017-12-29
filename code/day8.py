@@ -49,6 +49,10 @@ class Register(object):
         # carry out instruction
         function(var, val, d_var, mod_val)
 
+    def reset(self):
+        for k in self.variables.keys():
+            self.variables[k] = 0
+
     def __generate_function(self, mod, conditional):
         '''Function generation engine'''
         if conditional == '==' and mod == 'inc':
