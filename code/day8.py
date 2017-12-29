@@ -49,6 +49,12 @@ class Register(object):
         # carry out instruction
         function(var, val, d_var, mod_val)
 
+        return var
+
+    def reset(self):
+        for k in self.variables.keys():
+            self.variables[k] = 0
+
     def __generate_function(self, mod, conditional):
         '''Function generation engine'''
         if conditional == '==' and mod == 'inc':
@@ -115,3 +121,13 @@ if __name__ == '__main__':
         register.read_instruction(i)
 
     print("Part 1:        ", max(register.variables.values()))
+
+    register.reset()
+
+    max_val = 0
+    for i in instructions:
+        var = register.read_instruction(i)
+        if register.variables[var] > max_val:
+            max_val = register.variables[var]
+
+    print("Part 2:        ", max_val)
