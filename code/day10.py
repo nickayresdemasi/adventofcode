@@ -9,74 +9,107 @@ Code using Python 3
 
 import os
 
+from circular_list import CircularList
+
 
 ABS_PATH = 'C://Users/ldema/Coding/python_projects/adventofcode2017'
 
 
-class CircularList(object):
-    def __init__(self, array):
-        self.array = array
+def xor(l):
+    if len(l) <= 1:
+        raise TypeError("List must be longer than size 1")
 
-    def index(self, beg, end):
-        '''Allows for indexing of circular list'''
+    result = l[0] ^ l[1]
+    if len(l) > 2:
+        for c in l[2:]:
+            result = result ^ c
 
-        # check that index is entered correctly
-        if beg > end:
-            raise ValueError("Invalid indexing")
+    return result
 
-        # wrap-around if necessary
-        if end > len(self.array):
-            first_half = self.array[beg:]
-            second_half = self.array[:end - len(self.array)]
-            sub = first_half + second_half
-        else:
-            sub = self.array[beg:end]
 
-        return sub
+class KnotHash(object):
+    def __init__(self):
+        self.circular_list = CircularList([i for i in range(256)])
+        self.pos = 0
+        self.skip = 0
 
-    def replace(self, beg, sub):
-        '''Allows for replacement of portion of circular list with other list'''
+    def reduce(self):
+        '''Reduces a hash to a dense hash'''
 
-        for i in range(len(sub)):
-            index = beg + i
+        # create empty list to populate with dense hash
+        self.dense_hash = []
 
-            # wrap-around if index outside range of array
-            if index >= len(self.array):
-                index %= len(self.array)
+        # iterate through array in groups of 16
+        pos = 0
+        while pos < len(self.circular_list.array):
+            num = xor(self.circular_list.index(pos, pos + 16))
+            self.dense_hash.append(num)
+            pos += 16
 
-            self.array[index] = sub[i]
+    def reset(self):
+        '''Resets position and skip to 0'''
+        self.circular_list = CircularList([i for i in range(256)])
+        self.pos = 0
+        self.skip = 0
 
+    def tie(self, length):
+        '''Reverse portion of array for user-passed length, increases positiona
+        and skip tracker variables'''
+
+        # identify end of list
+        end = self.pos + length
+
+        # creat sub-array and reverse
+        sub = self.circular_list.index(self.pos, end)
+        reverse = sub[::-1]
+
+        # replace all values
+        self.circular_list.replace(self.pos, reverse)
+
+        # move position
+        self.pos = end + self.skip
+        if self.pos > len(self.circular_list.array):
+            self.pos %= len(self.circular_list.array)
+
+        # increase skip size
+        self.skip += 1
 
 if __name__ == '__main__':
     path = os.path.join(ABS_PATH, 'input/day10.txt')
     file = open(path, 'r')
-    lengths = [int(n) for n in file.read().split(',')]
+    text = file.read()
 
-    # instantiate circular list
-    clist = CircularList([i for i in range(256)])
+    # create lengths from text
+    lengths = [int(n) for n in text.split(',')]
 
-    # instantiate trakcer variables for list position and skip size
-    pos = 0
-    skip = 0
+    # instantiate Knot Hash
+    knot_hash = KnotHash()
 
     # iterate through lengths
     for l in lengths:
-        # identify end of list
-        end = pos + l
+        knot_hash.tie(l)
 
-        # create sub-array and reverse
-        sub = clist.index(pos, end)
-        reverse = sub[::-1]
+    print("Part 1:          ", knot_hash.circular_list.array[0] * knot_hash.circular_list.array[1])
 
-        # replace all values
-        clist.replace(pos, reverse)
 
-        # move position
-        pos = end + skip
-        if pos >= len(clist.array):
-            pos %= len(clist.array)
+    # create new lengths from ASCII
+    lengths = [ord(c) for c in text]
+    lengths += [17, 31, 73, 47, 23]
 
-        # increase skip size
-        skip += 1
+    # re-instantiate Knot Hash
+    knot_hash.reset()
 
-    print("Part 1:          ", clist.array[0] * clist.array[1])
+    for i in range(64):
+        for l in lengths:
+            knot_hash.tie(l)
+
+    # create dense hash
+    knot_hash.reduce()
+
+    # convert to hexadecimal
+    final_string = []
+    for n in knot_hash.dense_hash:
+        h = hex(n)
+        final_string.append(h.replace('0x', ''))
+
+    print("Part 2:          ", "".join(final_string))
