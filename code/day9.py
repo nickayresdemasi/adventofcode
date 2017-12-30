@@ -39,21 +39,26 @@ class GroupParser(object):
                 pos += 1
             elif c == '<':
                 pos += self.garbage_time(pos)
-            elif c == '!':
-                pos += 2
             else:
                 pos += 1
 
         return total
 
-    def garbage_time(self, pos):
+    def garbage_time(self, pos, count=False):
         '''Finds the end of a group of garbage'''
         offset = 1
+        garbage = 0
         while self.input[pos + offset] != '>':
-            offset += 1
             # check for nullifying character
             if self.input[pos + offset] == '!':
+                offset += 2
+            else:
                 offset += 1
+                garbage += 1
+
+        # return total amount of gabrage if count specified
+        if count:
+            return offset, garbage
 
         return offset
 
@@ -65,3 +70,16 @@ if __name__ == '__main__':
 
     gp = GroupParser(text)
     print("Part 1:         ", gp.group_calculator())
+
+    # count all garbage
+    pos = 0
+    total_garbage = 0
+    while pos < len(text):
+        c = text[pos]
+        if c == '<':
+            offset, garbage = gp.garbage_time(pos, count=True)
+            pos += offset
+            total_garbage += garbage
+        else:
+            pos += 1
+    print("Part 2:         ", total_garbage)
