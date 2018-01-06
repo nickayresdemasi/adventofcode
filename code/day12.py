@@ -6,7 +6,7 @@ Code using Python 3
 
 '''
 
-import logging
+
 import os
 import re
 
@@ -39,11 +39,10 @@ class Pipes(object):
 
         return pipes
 
-    def count_connections(self, p_id, c_list=[]):
+    def connections(self, p_id, c_list=[]):
         '''Creates a list of connections to a specific pipe id'''
         # append initial pipe id
         c_list.append(p_id)
-        logging.debug(c_list)
 
         # check if any connections have already been added
         if subset(c_list, self.pipes[p_id]):
@@ -56,18 +55,37 @@ class Pipes(object):
             if c in c_list:
                 continue
 
-            c_list = self.count_connections(c, c_list=c_list)
+            c_list = self.connections(c, c_list=c_list)
 
         # return list of unique connections
         return c_list
 
+    def groups(self):
+        '''Counts total number of self-contained groups in pipe map'''
+
+        # create variable to track how many groups are seen
+        groups = 0
+        # create variable to track which pipes are already in groups
+        used_pipes = []
+
+        # iterate through pipes and check for new groups
+        for k in self.pipes.keys():
+
+            # skip pipes which have already been seen
+            if k in used_pipes:
+                continue
+
+            used_pipes += self.connections(k)
+            groups += 1
+
+        return groups
+
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='day12.log', filemode='w', level=logging.DEBUG)
-
     path = os.path.join(ABS_PATH, 'input/day12.txt')
     file = open(path, 'r')
     text = file.read()
 
     p = Pipes(text)
-    print("Part 1:          ", len(p.count_connections(0)))
+    print("Part 1:          ", len(p.connections(0)))
+    print("Part 2:          ", p.groups())
