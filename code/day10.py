@@ -33,18 +33,29 @@ class KnotHash(object):
         self.pos = 0
         self.skip = 0
 
-    def reduce(self):
-        '''Reduces a hash to a dense hash'''
+    def create_hash(self, s):
+        '''Creates a knot hash from a string of input'''
 
-        # create empty list to populate with dense hash
-        self.dense_hash = []
+        # create lengths from ASCII conversions
+        lengths = [ord(c) for c in s]
+        # append standard end lengths
+        lengths += [17, 31, 73, 47, 23]
 
-        # iterate through array in groups of 16
-        pos = 0
-        while pos < len(self.circular_list.array):
-            num = xor(self.circular_list.index(pos, pos + 16))
-            self.dense_hash.append(num)
-            pos += 16
+        # perform ties of each lenght 64 times
+        for i in range(64):
+            for l in lengths:
+                self.tie(l)
+
+        # reduce hash to dense hash
+        dense_hash = self.__reduce()
+
+        # create and return final string of hex values
+        final_string = []
+        for n in dense_hash:
+            h = hex(n)
+            final_string.append(h.replace('0x', ''))
+
+        return ''.join(final_string)
 
     def reset(self):
         '''Resets position and skip to 0'''
@@ -71,8 +82,24 @@ class KnotHash(object):
         if self.pos > len(self.circular_list.array):
             self.pos %= len(self.circular_list.array)
 
-        # increase skip size
-        self.skip += 1
+            # increase skip size
+            self.skip += 1
+
+    def __reduce(self):
+        '''Reduces a hash to a dense hash'''
+
+        # create empty list to populate with dense hash
+        dense_hash = []
+
+        # iterate through array in groups of 16
+        pos = 0
+        while pos < len(self.circular_list.array):
+            num = xor(self.circular_list.index(pos, pos + 16))
+            dense_hash.append(num)
+            pos += 16
+
+        return dense_hash
+
 
 if __name__ == '__main__':
     path = os.path.join(ABS_PATH, 'input/day10.txt')
@@ -91,25 +118,8 @@ if __name__ == '__main__':
 
     print("Part 1:          ", knot_hash.circular_list.array[0] * knot_hash.circular_list.array[1])
 
-
-    # create new lengths from ASCII
-    lengths = [ord(c) for c in text]
-    lengths += [17, 31, 73, 47, 23]
-
-    # re-instantiate Knot Hash
+    # reset Knot Hash
     knot_hash.reset()
 
-    for i in range(64):
-        for l in lengths:
-            knot_hash.tie(l)
-
-    # create dense hash
-    knot_hash.reduce()
-
-    # convert to hexadecimal
-    final_string = []
-    for n in knot_hash.dense_hash:
-        h = hex(n)
-        final_string.append(h.replace('0x', ''))
-
-    print("Part 2:          ", "".join(final_string))
+    # create true knot hash treating list of numbers as a string
+    print("Part 2:          ", knot_hash.create_hash(text))
