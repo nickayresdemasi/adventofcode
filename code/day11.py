@@ -28,61 +28,107 @@ class HexGrid(object):
     def step(self, direction):
         '''Evaluates a direction in a hexagrid and updates register of steps'''
         if direction == 'nw':
+            # look for presence of direct opposite
             if self.map['se'] > 0:
                 self.map['se'] -= 1
+
+            # look for presence of combination movements
+            elif self.map['s'] > 0:
+                self.map['s'] -= 1
+                self.step('sw')
+            elif self.map['ne'] > 0:
+                self.map['ne'] -= 1
+                self.step('n')
+
+            # increase step in direction by 1
             else:
                 self.map['nw'] += 1
+
+        # repeate above process for all directions
         elif direction == 'n':
+            # direct opposite
             if self.map['s'] > 0:
                 self.map['s'] -= 1
+
+            # combos
+            elif self.map['sw'] > 0:
+                self.map['sw'] -= 1
+                self.step('nw')
+            elif self.map['se'] > 0:
+                self.map['se'] -= 1
+                self.step('ne')
+
             else:
                 self.map['n'] += 1
+
         elif direction == 'ne':
+            # direct opposite
             if self.map['sw'] > 0:
                 self.map['sw'] -= 1
+
+            # combos
+            elif self.map['s'] > 0:
+                self.map['s'] -= 1
+                self.step('se')
+            elif self.map['nw'] > 0:
+                self.map['nw'] -= 1
+                self.step('n')
+
+
             else:
                 self.map['ne'] += 1
+
         elif direction == 'se':
+            # direct opposite
             if self.map['nw'] > 0:
                 self.map['nw'] -= 1
+
+            # combos
+            elif self.map['sw'] > 0:
+                self.map['sw'] -= 1
+                self.step('s')
+            elif self.map['n'] > 0:
+                self.map['n'] -= 1
+                self.step('ne')
+
             else:
                 self.map['se'] += 1
+
         elif direction == 's':
+            # direct opposite
             if self.map['n'] > 0:
                 self.map['n'] -= 1
+
+            # combos
+            elif self.map['nw'] > 0:
+                self.map['nw'] -= 1
+                self.step('sw')
+            elif self.map['ne'] > 0:
+                self.map['ne'] -= 1
+                self.step('se')
+
             else:
                 self.map['s'] += 1
+
         elif direction == 'sw':
+            # direct opposite
             if self.map['ne'] > 0:
                 self.map['ne'] -= 1
+
+            # combos
+            elif self.map['se'] > 0:
+                self.map['se'] -= 1
+                self.step('s')
+            elif self.map['n'] > 0:
+                self.map['n'] -= 1
+                self.step('nw')
+
             else:
                 self.map['sw'] += 1
 
-    def reduce_map(self):
-        for k in self.map.keys():
-            if self.map[k] == 0:
-                continue
-
-            if k == 'nw':
-                if self.map[k] <= self.map['s'] or self.map[k] <= self.map['se']:
-                    continue
-            elif k == 'n':
-                if self.map[k] <= self.map['sw'] or self.map[k] <= self.map['se']:
-                    continue
-            elif k == 'ne':
-                if self.map[k] <= self.map['s'] or self.map[k] <= self.map['nw']:
-                    continue
-            elif k == 'se':
-                if self.map[k] <= self.map['n'] or self.map[k] <= self.map['sw']:
-                    continue
-            elif k == 's':
-                if self.map[k] <= self.map['ne'] or self.map[k] <= self.map['nw']:
-                    continue
-            elif k == 'sw':
-                if self.map[k] <= self.map['n'] or self.map[k] <= self.map['se']:
-                    continue
-
-            self.steps += self.map[k]
+    def count_steps(self):
+        for v in self.map.values():
+            self.steps += v
 
 if __name__ == '__main__':
     path = os.path.join(ABS_PATH, 'input/day11.txt')
@@ -96,7 +142,6 @@ if __name__ == '__main__':
     for d in directions:
         hg.step(d)
 
-    hg.reduce_map()
+    hg.count_steps()
 
-    print(hg.map)
     print("Part 1:          ", hg.steps)
