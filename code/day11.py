@@ -23,7 +23,6 @@ class HexGrid(object):
             's':  0,
             'sw': 0
         }
-        self.steps = 0
 
     def step(self, direction):
         '''Evaluates a direction in a hexagrid and updates register of steps'''
@@ -127,8 +126,12 @@ class HexGrid(object):
                 self.map['sw'] += 1
 
     def count_steps(self):
+        '''Counts how many steps away from center current position is'''
+        steps = 0
         for v in self.map.values():
-            self.steps += v
+            steps += v
+
+        return steps
 
 if __name__ == '__main__':
     path = os.path.join(ABS_PATH, 'input/day11.txt')
@@ -139,9 +142,18 @@ if __name__ == '__main__':
     hg = HexGrid()
 
     # count total number of steps needed to get to final position
+    # also collect data to find max number of steps away
+
+    max_steps = 0
     for d in directions:
         hg.step(d)
 
-    hg.count_steps()
+        # get current steps away
+        steps_away = hg.count_steps()
 
-    print("Part 1:          ", hg.steps)
+        # adjust max if greater
+        if steps_away > max_steps:
+            max_steps = steps_away
+
+    print("Part 1:          ", hg.count_steps())
+    print("Part 2:          ", max_steps)
