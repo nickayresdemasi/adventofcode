@@ -37,13 +37,13 @@ class KnotHash(object):
         '''Creates a knot hash from a string of input'''
 
         # create lengths from ASCII conversions
-        lengths = [ord(c) for c in s]
+        knot_lengths = [ord(c) for c in s]
         # append standard end lengths
-        lengths += [17, 31, 73, 47, 23]
+        knot_lengths += [17, 31, 73, 47, 23]
 
         # perform ties of each lenght 64 times
         for i in range(64):
-            for l in lengths:
+            for l in knot_lengths:
                 self.tie(l)
 
         # reduce hash to dense hash
@@ -82,8 +82,8 @@ class KnotHash(object):
         if self.pos > len(self.circular_list.array):
             self.pos %= len(self.circular_list.array)
 
-            # increase skip size
-            self.skip += 1
+        # increase skip size
+        self.skip += 1
 
     def __reduce(self):
         '''Reduces a hash to a dense hash'''
