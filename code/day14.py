@@ -38,20 +38,21 @@ class KnotGraph(object):
         self.grid = self.__load(key)
 
     def contiguous_groups(self):
-        used = self.used()
+        '''Counts the number of contiguous groups in grid'''
 
-        def f(c, used):
-            adjacent = self.__adjacent(c)
-            for a in adjacent:
-                if a in used:
-                    used.remove(a)
-                    f(a, used)
+        groups = 0
+        visited = []
 
-        for c in used:
-            used.remove(c)
-            f(c, used)
+        for i in range(128):
+            for j in range(128):
+                if (i, j) in visited:
+                    continue
+                if not self.grid[i][j]:
+                    continue
+                self.__dfs((i, j), visited)
+                groups += 1
 
-        return len(used)
+        return groups
 
     def used(self):
         '''Counts number of used spaces in Knot Graph'''
@@ -59,22 +60,39 @@ class KnotGraph(object):
         used = 0
 
         for row in self.grid:
-            for c in row:
-                if c == '1':
-                    used += 1
+            used += sum(row)
 
         return used
 
     def __adjacent(self, coordinate):
-        '''Finds all adjacent coordinates'''
+        '''Finds all adjacent nodes to coordinate in KnotGraph'''
 
         adjacent = []
-        adjacent.append((coordinate[0] - 1, coordinate[1]))
-        adjacent.append((coordinate[0] + 1, coordinate[1]))
-        adjacent.append((coordinate[0], coordinate[1] - 1))
-        adjacent.append((coordinate[0], coordinate[1] + 1))
+
+        if coordinate[0] > 0:
+            adjacent.append((coordinate[0] - 1, coordinate[1]))
+        if coordinate[1] > 0:
+            adjacent.append((coordinate[0], coordinate[1] - 1))
+        if coordinate[0] < 127:
+            adjacent.append((coordinate[0] + 1, coordinate[1]))
+        if coordinate[1] < 127:
+            adjacent.append((coordinate[0], coordinate[1] + 1))
 
         return adjacent
+
+    def __dfs(self, coordinate, visited):
+        '''Performs a depth-first search on a node in a graph'''
+
+        if coordinate in visited:
+            return
+
+        if not self.grid[coordinate[0]][coordinate[1]]:
+            return
+
+        visited.append(coordinate)
+        for child in self.__adjacent(coordinate):
+            self.__dfs(child, visited)
+
 
     def __load(self, s):
         '''Creates a 128x128 grid of 0s and 1s using knot hashes'''
@@ -92,18 +110,15 @@ class KnotGraph(object):
             # create empty list to hold row
             binary_string = []
 
-            # create key
-            key = '{}-{}'.format(s, i)
-
             # create knot hash from key
-            knot_hash = kh.create_hash(key)
+            knot_hash = kh.create_hash('%s-%d' % (s, i))
 
             # iterate through chars in knot hash and convert to binay
             for c in knot_hash:
                 binary_string.append(hex_to_bin[c])
 
             # append row to grid
-            grid.append(''.join(binary_string))
+            grid.append(list(map(int, ''.join(binary_string))))
 
         return grid
 
@@ -115,5 +130,5 @@ if __name__ == '__main__':
     # count number of used spaces for part 1
     print("Part 1:           ", graph.used())
 
-    contiguous_groups = grid.contiguous_groups()
-    print("Part 2:           ", contiguous_groups)
+    # count number of contiguous groups
+    print("Part 2:           ", graph.contiguous_groups())
