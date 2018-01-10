@@ -53,7 +53,7 @@ class KnotHash(object):
         final_string = []
         for n in dense_hash:
             h = hex(n)
-            final_string.append(h.replace('0x', ''))
+            final_string.append(h.replace('0x', '').zfill(2))
 
         return ''.join(final_string)
 
