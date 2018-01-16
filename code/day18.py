@@ -10,6 +10,8 @@ Code using Python 3
 import os
 import string
 
+from register import Register
+
 
 ABS_PATH = 'C://Users/ldema/Coding/python_projects/adventofcode2017'
 
@@ -18,8 +20,8 @@ def duet(instructions):
     '''Plays through instructions in Duet code'''
 
     # instantiate SoundRegister object
-    sr1 = SoundRegister(0)
-    sr2 = SoundRegister(1)
+    sr1 = SoundRegister(0, string.ascii_lowercase)
+    sr2 = SoundRegister(1, string.ascii_lowercase)
 
     # instantiate tracking variables
     rs = [sr1, sr2]
@@ -86,23 +88,11 @@ def duet(instructions):
             return
 
 
-class SoundRegister(object):
-    def __init__(self, val):
-        self.register = {i: val for i in string.ascii_lowercase}
+class SoundRegister(Register):
+    def __init__(self, val, s):
+        super().__init__(val, s)
         self.queue = []
         self.flag = 'neutral'
-
-    def add(self, x, y):
-        '''Adds value of y (or at position y) to value at position x'''
-        self.register[x] += self.get_value(y)
-
-    def mod(self, x, y):
-        '''Modulos value at position x by value y (or at position y)'''
-        self.register[x] %= self.get_value(y)
-
-    def mul(self, x, y):
-        '''Multiplies value at position x by value y (or at position y)'''
-        self.register[x] *= self.get_value(y)
 
     def play(self, sound):
         '''Plays a sound and stores it'''
@@ -123,16 +113,6 @@ class SoundRegister(object):
     def send(self, x, dest):
         '''Sends a value x to a desitination list'''
         dest.insert(0, self.get_value(x))
-
-    def set(self, x, y):
-        '''Updates values in register'''
-        self.register[x] = self.get_value(y)
-
-    def get_value(self, x):
-        '''Returns value of x depending on if int or register key'''
-        if x in self.register.keys():
-            return self.register[x]
-        return x
 
 
 if __name__ == '__main__':
