@@ -1,7 +1,7 @@
 '''
 @author: Nick DeMasi
 
-Code to complete Day 21 of 2017 Advent of
+Code to complete Day 22 of 2017 Advent of
 Code using Python 3
 
 '''
