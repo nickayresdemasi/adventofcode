@@ -28,7 +28,7 @@ def method_1(lowr, uppr, letter, password):
 
 
 def method_2(lowr, uppr, letter, password):
-    """letter must occur once at either lowr or uppr index in password
+    """letter must occur once at either lowr or uppr index in password. 1-index
 
     Args:
         - lowr (int): lower index
@@ -38,7 +38,7 @@ def method_2(lowr, uppr, letter, password):
 
     Returns 1 if password conforms to criteria, 0 if not
     """
-    return ((password[lowr] == letter) + (password[uppr] == letter)) == 1
+    return ((password[lowr - 1] == letter) + (password[uppr - 1] == letter)) == 1
 
 
 def find_valid_passwords(criteria, passwords, method):
@@ -57,7 +57,7 @@ def find_valid_passwords(criteria, passwords, method):
     valid_passwords = 0
     for c, p in zip(criteria, passwords):
         lowr, uppr, letter = c
-        valid_passwords += method(lowr - 1, uppr - 1, letter, p)
+        valid_passwords += method(lowr, uppr, letter, p)
     return valid_passwords
 
 
@@ -70,6 +70,7 @@ def main():
     valid_passwords = find_valid_passwords(criteria, passwords, method_1)
     print("PART 1")
     print("Valid Passwords: %i" % valid_passwords)
+    print()
 
     # part 1
     valid_passwords = find_valid_passwords(criteria, passwords, method_2)
