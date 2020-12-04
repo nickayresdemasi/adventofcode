@@ -5,6 +5,16 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 INPUT_DIR = os.path.join(ROOT_DIR, "input")
 
 
+def parse_fname(f_obj):
+    """Parses the file name for get the day and year
+
+    Returns day and year as ints
+    """
+    fname = str(f_obj).split('.')[0]
+    _, day, year = fname.split('_')
+    return int(day), int(year)
+
+
 def read_input(day, year):
     """Reads puzzle input
 
