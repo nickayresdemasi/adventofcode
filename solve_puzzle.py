@@ -1,7 +1,9 @@
 import argparse
 from importlib import import_module
+import os
 
-from src.utils import read_input
+
+INPUT_DIR = os.path.join(os.path.dirname(__file__), "input")
 
 
 def read_input(year, day):
@@ -14,7 +16,7 @@ def read_input(year, day):
     Returns:
         puzzle input as a string
     """
-    fname = "day_{day}_{year}.txt".format(day=day, year=year)
+    fname = "day_{day}.txt".format(day=day, year=year)
     fpath = os.path.join(INPUT_DIR, str(year), fname)
     input_str = None
     with open(fpath, "r") as f:
