@@ -1,8 +1,7 @@
 import os
 
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-INPUT_DIR = os.path.join(ROOT_DIR, "input")
+
 
 
 def parse_fname(f_obj):
@@ -15,7 +14,7 @@ def parse_fname(f_obj):
     return int(day), int(year)
 
 
-def read_input(day, year):
+def read_input(year, day):
     """Reads puzzle input
 
     Args:
